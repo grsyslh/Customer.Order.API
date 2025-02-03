@@ -3,11 +3,13 @@ using Order.DataAccess.Context.Configurations;
 using Order.Domain.Entity;
 using Order.Domain.Entity.Base;
 
-namespace Order.Repository.Context
+namespace Order.DataAccess.Context
 {
     public class CustomerOrderPostreDbContext : DbContext
     {
-        public CustomerOrderPostreDbContext(DbContextOptions<CustomerOrderPostreDbContext> options) : base(options) { }
+        public CustomerOrderPostreDbContext(DbContextOptions<CustomerOrderPostreDbContext> options) : base(options)
+        {
+        }
 
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Product> Products { get; set; }
@@ -22,9 +24,9 @@ namespace Order.Repository.Context
             modelBuilder.ApplyConfiguration(new CustomerOrderConfiguration());
 
             modelBuilder.Entity<CustomerOrder>()
-               .HasMany(co => co.Products)
-               .WithMany(p => p.Orders)
-               .UsingEntity(j => j.ToTable("OrderProducts"));
+                .HasMany(co => co.Products)
+                .WithMany(p => p.Orders)
+                .UsingEntity(j => j.ToTable("OrderProducts"));
 
             modelBuilder.Entity<CustomerOrder>()
                 .HasOne(co => co.Customer)
@@ -41,17 +43,8 @@ namespace Order.Repository.Context
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            try
-            {
-
-                UpdateCRUDTimeStamp();
-
-                return (await base.SaveChangesAsync(true, cancellationToken));
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            UpdateCRUDTimeStamp();
+            return await base.SaveChangesAsync(true, cancellationToken);
         }
 
 
@@ -81,6 +74,5 @@ namespace Order.Repository.Context
                 }
             }
         }
-
     }
 }

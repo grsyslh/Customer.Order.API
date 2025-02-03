@@ -1,4 +1,4 @@
-﻿namespace Order.Caching.Redis.Services
+﻿namespace Order.Caching.Redis.Services.Interfaces
 {
     public interface IRedisCacheService
     {

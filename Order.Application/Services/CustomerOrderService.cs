@@ -33,7 +33,8 @@ namespace Order.ApplicationService.Services
             _customerOrderRepository = customerOrderRepository;
         }
 
-        public async Task<GetCustomerOrderByIdQueryResponse> GetCustomerOrderById(GetCustomerOrderByIdQueryRequest request, CancellationToken cancellationToken)
+        public async Task<GetCustomerOrderByIdQueryResponse> GetCustomerOrderById(
+            GetCustomerOrderByIdQueryRequest request, CancellationToken cancellationToken)
         {
             var customerOrder = await _customerOrderRepository.GetById(request.Id, cancellationToken, x => x.Products);
 
@@ -43,63 +44,52 @@ namespace Order.ApplicationService.Services
             return _mapper.Map<GetCustomerOrderByIdQueryResponse>(customerOrder);
         }
 
-        public async Task<List<GetCustomerOrdersByCustomerIdQueryResponse>> GetCustomerOrdersByCustomerId(GetCustomerOrdersByCustomerIdQueryRequest request, CancellationToken cancellationToken)
+        public async Task<List<GetCustomerOrdersByCustomerIdQueryResponse>> GetCustomerOrdersByCustomerId(
+            GetCustomerOrdersByCustomerIdQueryRequest request, CancellationToken cancellationToken)
         {
-            try
-            {
-
-            var customerOrderList = await _customerOrderRepository.GetByFilterList(x => x.CustomerId == request.CustomerId, cancellationToken, true, x => x.Products);
+            var customerOrderList =
+                await _customerOrderRepository.GetByFilterList(x => x.CustomerId == request.CustomerId,
+                    cancellationToken, true, x => x.Products);
 
             if (customerOrderList == null)
                 throw new Exception("Customer order not found.");
 
             return _mapper.Map<List<GetCustomerOrdersByCustomerIdQueryResponse>>(customerOrderList);
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
         }
 
-        public async Task<CreateCustomerOrderCommandResponse> CreateCustomerOrder(CreateCustomerOrderCommandRequest request, CancellationToken cancellationToken)
+        public async Task<CreateCustomerOrderCommandResponse> CreateCustomerOrder(
+            CreateCustomerOrderCommandRequest request, CancellationToken cancellationToken)
         {
-            try
-            {
+            var customer = await _customerRepository.GetById(request.CustomerId, cancellationToken);
 
-                var customer = await _customerRepository.GetById(request.CustomerId, cancellationToken);
+            if (customer == null)
+                throw new Exception("Customer not found.");
 
-                if (customer == null)
-                    throw new Exception("Customer not found.");
+            if (request.Products == null || !request.Products.Any())
+                throw new Exception("Please specify products.");
 
-                if (request.Products == null || !request.Products.Any())
-                    throw new Exception("Please specify products.");
+            var products = new List<Product>();
+            products.AddRange(_mapper.Map<List<Product>>(request.Products));
 
-                var products = new List<Product>();
-                products.AddRange(_mapper.Map<List<Product>>(request.Products));
+            var customerOrder = new CustomerOrder();
+            customerOrder.CustomerId = request.CustomerId;
+            customerOrder.Products = products;
+            customerOrder.OrderDate = DateTime.Now.ToUniversalTime();
 
-                var customerOrder = new CustomerOrder();
-                customerOrder.CustomerId = request.CustomerId;
-                customerOrder.Products = products;
-                customerOrder.OrderDate = DateTime.Now.ToUniversalTime();
+            var customerOrderEntity = await _customerOrderRepository.Create(customerOrder, cancellationToken);
+            await _customerOrderRepository.SaveChangesAsync(cancellationToken);
 
-                var customerOrderEntity = await _customerOrderRepository.Create(customerOrder, cancellationToken);
-                await _customerOrderRepository.SaveChangesAsync(cancellationToken);
+            await _notificationService.SendNotificationAsync($"Dear {customer.Name}, your order has been received.",
+                cancellationToken);
 
-                await _notificationService.SendNotificationAsync($"Dear {customer.Name}, your order has been received.", cancellationToken);
-
-                return _mapper.Map<CreateCustomerOrderCommandResponse>(customerOrderEntity);
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            return _mapper.Map<CreateCustomerOrderCommandResponse>(customerOrderEntity);
         }
 
-        public async Task<UpdateCustomerOrderCommandResponse> UpdateCustomerOrder(UpdateCustomerOrderCommandRequest request, CancellationToken cancellationToken)
+        public async Task<UpdateCustomerOrderCommandResponse> UpdateCustomerOrder(
+            UpdateCustomerOrderCommandRequest request, CancellationToken cancellationToken)
         {
-            var customerOrder = await _customerOrderRepository.GetById(request.CustomerOrderId, cancellationToken, x => x.Products, x => x.Customer);
+            var customerOrder = await _customerOrderRepository.GetById(request.CustomerOrderId, cancellationToken,
+                x => x.Products, x => x.Customer);
 
             if (customerOrder == null)
             {
@@ -113,18 +103,22 @@ namespace Order.ApplicationService.Services
 
                 _customerRepository.Update(customer);
 
-                await _notificationService.SendNotificationAsync($"Dear {customerOrder.Customer.Name}, your address has been updated.", cancellationToken);
+                await _notificationService.SendNotificationAsync(
+                    $"Dear {customerOrder.Customer.Name}, your address has been updated.", cancellationToken);
             }
 
             if (request.RemovedProductIds != null && request.RemovedProductIds.Any())
             {
-                var productsToRemove = customerOrder.Products.Where(p => request.RemovedProductIds.Contains(p.Id)).ToList();
+                var productsToRemove = customerOrder.Products.Where(p => request.RemovedProductIds.Contains(p.Id))
+                    .ToList();
                 foreach (var product in productsToRemove)
                 {
                     product.Orders = null;
                     _productRepository.Remove(product);
 
-                    await _notificationService.SendNotificationAsync($"Dear {customerOrder.Customer.Name}, that products you cancelled have been removed.", cancellationToken);
+                    await _notificationService.SendNotificationAsync(
+                        $"Dear {customerOrder.Customer.Name}, that products you cancelled have been removed.",
+                        cancellationToken);
                 }
             }
 
@@ -143,14 +137,18 @@ namespace Order.ApplicationService.Services
 
                         _productRepository.Update(existingProduct);
 
-                        await _notificationService.SendNotificationAsync($"Dear {customerOrder.Customer.Name}, your basket has been updated.", cancellationToken);
+                        await _notificationService.SendNotificationAsync(
+                            $"Dear {customerOrder.Customer.Name}, your basket has been updated.", cancellationToken);
                     }
                     else
                     {
-                        var newproductDto = await _productRepository.Create(_mapper.Map<Product>(addOrUpdateProduct), cancellationToken);
+                        var newproductDto = await _productRepository.Create(_mapper.Map<Product>(addOrUpdateProduct),
+                            cancellationToken);
                         customerOrder.Products.Add(newproductDto);
                         _customerOrderRepository.Update(customerOrder);
-                        await _notificationService.SendNotificationAsync($"Dear {customerOrder.Customer.Name}, new products you purchased have been added.", cancellationToken);
+                        await _notificationService.SendNotificationAsync(
+                            $"Dear {customerOrder.Customer.Name}, new products you purchased have been added.",
+                            cancellationToken);
                     }
                 }
             }
@@ -162,9 +160,11 @@ namespace Order.ApplicationService.Services
             return _mapper.Map<UpdateCustomerOrderCommandResponse>(customerOrder);
         }
 
-        public async Task<DeleteCustomerOrderCommandResponse> DeleteCustomerOrder(DeleteCustomerOrderCommandRequest request, CancellationToken cancellationToken)
+        public async Task<DeleteCustomerOrderCommandResponse> DeleteCustomerOrder(
+            DeleteCustomerOrderCommandRequest request, CancellationToken cancellationToken)
         {
-            var customerOrder = await _customerOrderRepository.GetById(request.CustomerOrderId, cancellationToken, x => x.Customer);
+            var customerOrder =
+                await _customerOrderRepository.GetById(request.CustomerOrderId, cancellationToken, x => x.Customer);
             if (customerOrder == null)
             {
                 throw new Exception("Customer Order Not Found.");
@@ -173,9 +173,10 @@ namespace Order.ApplicationService.Services
             _customerOrderRepository.Remove(customerOrder);
             await _customerOrderRepository.SaveChangesAsync(cancellationToken);
 
-            await _notificationService.SendNotificationAsync($"Dear {customerOrder.Customer.Name}, new products you purchased have been added.", cancellationToken);
+            await _notificationService.SendNotificationAsync(
+                $"Dear {customerOrder.Customer.Name}, new products you purchased have been added.", cancellationToken);
 
-            return new DeleteCustomerOrderCommandResponse { IsSuccess = true};
+            return new DeleteCustomerOrderCommandResponse { IsSuccess = true };
         }
     }
 }

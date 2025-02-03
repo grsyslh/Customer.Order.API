@@ -1,5 +1,6 @@
 ﻿using StackExchange.Redis;
 using System.Text.Json;
+using Order.Caching.Redis.Services.Interfaces;
 
 namespace Order.Caching.Redis.Services
 {

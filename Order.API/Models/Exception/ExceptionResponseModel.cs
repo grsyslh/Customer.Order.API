@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Order.API.Exception
+namespace Order.API.Models.Exception
 {
     public class ExceptionResponseModel
     {

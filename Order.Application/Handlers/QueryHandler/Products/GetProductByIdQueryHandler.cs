@@ -3,7 +3,7 @@ using Order.ApplicationService.Services.Interfaces;
 using Order.Contract.Request.Query.Products;
 using Order.Contract.Response.Query.Products;
 
-namespace Order.ApplicationService.Handlers.CommandHandler
+namespace Order.ApplicationService.Handlers.QueryHandler.Products
 {
     public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQueryRequest, GetProductByIdQueryResponse>
     {

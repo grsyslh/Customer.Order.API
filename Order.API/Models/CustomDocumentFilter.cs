@@ -1,6 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
-using OfferSale.Service.Validators;
-using Order.API.Exception;
+using Order.API.Models.Exception;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Order.API.Models

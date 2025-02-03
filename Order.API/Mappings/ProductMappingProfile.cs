@@ -5,7 +5,7 @@ using Order.Contract.Response.Command.Products;
 using Order.Contract.Response.Query.Products;
 using Order.Domain.Entity;
 
-namespace Order.Contract.Mappings
+namespace Order.API.Mappings
 {
     public class ProductMappingProfile : Profile
     {

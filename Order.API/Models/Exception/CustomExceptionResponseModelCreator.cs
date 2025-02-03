@@ -1,7 +1,7 @@
 ﻿using TechBuddy.Middlewares.ExceptionHandling;
 using TechBuddy.Middlewares.ExceptionHandling.Infrastructure;
 
-namespace Order.API.Exception
+namespace Order.API.Models.Exception
 {
     public class CustomExceptionResponseModelCreator : IResponseModelCreator
     {

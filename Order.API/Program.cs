@@ -1,7 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using OfferSale.DataAccess.Repository;
-using Order.API.Exception;
 using Order.API.Logging.Serilog;
 using Order.API.Models;
 using Order.ApplicationService.Handlers.CommandHandler;
@@ -14,10 +12,14 @@ using Order.API.Filters;
 using Order.DataAccess.Repository.Interfaces;
 using Order.Queue.RabbitMQ.Consumer;
 using Order.Queue.RabbitMQ.Producer;
-using Order.Repository.Context;
 using Serilog;
 using StackExchange.Redis;
 using System.Reflection;
+using Order.API.Models.Exception;
+using Order.ApplicationService.Handlers.CommandHandler.Products;
+using Order.Caching.Redis.Services.Interfaces;
+using Order.DataAccess.Context;
+using Order.DataAccess.Repository;
 using TechBuddy.Middlewares.ExceptionHandling;
 
 var builder = WebApplication.CreateBuilder(args);

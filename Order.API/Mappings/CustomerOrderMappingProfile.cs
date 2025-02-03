@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using Order.Contract.Request.Command.CustomerOrders;
 using Order.Contract.Response.Command.CustomerOrders;
 using Order.Contract.Response.Query.CustomerOrders;
 using Order.Domain.Entity;
 
-namespace Order.Contract.Mappings
+namespace Order.API.Mappings
 {
     public class CustomerOrderMappingProfile : Profile
     {

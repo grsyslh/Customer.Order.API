@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
+using Order.DataAccess.Context;
 using Order.DataAccess.Repository.Interfaces;
 using Order.Domain.Entity.Base;
-using Order.Repository.Context;
-using System.Linq.Expressions;
 
-namespace OfferSale.DataAccess.Repository
+namespace Order.DataAccess.Repository
 {
     public class Repository<T> : IRepository<T> where T : BaseEntity
     {

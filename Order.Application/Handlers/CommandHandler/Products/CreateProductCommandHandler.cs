@@ -3,7 +3,7 @@ using Order.ApplicationService.Services.Interfaces;
 using Order.Contract.Request.Command.Products;
 using Order.Contract.Response.Command.Products;
 
-namespace Order.ApplicationService.Handlers.CommandHandler
+namespace Order.ApplicationService.Handlers.CommandHandler.Products
 {
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommandRequest, CreateProductCommandResponse>
     {

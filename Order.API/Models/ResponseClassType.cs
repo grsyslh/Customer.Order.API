@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace OfferSale.Service.Validators
+namespace Order.API.Models
 {
     public static class ResponseClassType
     {

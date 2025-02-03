@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using Order.ApplicationService.Services.Interfaces;
-using Order.Caching.Redis.Services;
+using Order.Caching.Redis.Services.Interfaces;
 using Order.Contract.Request.Command.Products;
 using Order.Contract.Request.Query.Products;
-using Order.Contract.Response.Command.CustomerOrders;
 using Order.Contract.Response.Command.Products;
 using Order.Contract.Response.Query.Products;
 using Order.DataAccess.Repository.Interfaces;
