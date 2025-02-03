@@ -49,7 +49,10 @@ The Customer Order API is a .NET 8 application designed to manage customer order
 ## Getting Started
 ### Some Customers For Test
 - 34dc96f2-bd4f-4d86-8a06-342b180a02ca	Salih G.	Test Adres Denizli	grsyslh@gmail.com
-- 6c531a8d-01c1-4dad-be85-9aa638e6b6fe	Ahmet T.	Istanbul Updated Customer Address	ahmet.t*****@aktiftech.com	
+- 6c531a8d-01c1-4dad-be85-9aa638e6b6fe	Ahmet T.	Istanbul Updated Customer Address	ahmet.t*****@aktiftech.com
+
+### API KEY
+X_API_KEY: "Aktif.Tech.6#Kn.e0C0uSo"
 
 ### Prerequisites
 - .NET 8 SDK
